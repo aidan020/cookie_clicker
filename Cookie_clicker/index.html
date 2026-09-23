@@ -7,44 +7,46 @@
     <link rel="stylesheet" href="main.css">
 </head>
 <body>
- 
+
     <header>
         <h1>Cookie Clicker</h1>
     </header>
- 
+
     <main>
         <section id="cookie-area">
             <p id="cookie-count">0 cookies</p>
             <p id="cps-count">0 cookies per second</p>
- 
-            <button id="cookie-btn"><img src="f27b9b91acca9a52b0d60df59dfa212f.jpg" alt="Cookie"></button>
+
+            <div id="cookie-float-wrapper">
+                <button id="cookie-btn"><img src="f27b9b91acca9a52b0d60df59dfa212f.jpg" alt="Cookie"></button>
+            </div>
         </section>
- 
+
         <section id="shop-area">
- 
+
             <div class="tabs">
                 <button class="tab-btn active" data-tab="production">Production</button>
                 <button class="tab-btn" data-tab="upgrades">Upgrades</button>
             </div>
- 
+
             <div id="production-panel" class="tab-panel">
                 <h2>Production units</h2>
                 <div id="production-list"></div>
             </div>
- 
+
             <div id="upgrades-panel" class="tab-panel" style="display:none;">
                 <h2>Upgrades</h2>
                 <div id="upgrades-list"></div>
             </div>
- 
+
         </section>
- 
+
         <section id="overview-area">
             <h2>Overzicht</h2>
             <div id="overview-list">Nog niets gekocht</div>
         </section>
     </main>
- 
+
     <script src="cookie_clicker.js"></script>
 </body>
 </html>
