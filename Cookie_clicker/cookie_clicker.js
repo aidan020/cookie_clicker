@@ -2,8 +2,8 @@ let cookies = 0;
 let cookiesPerClick = 1;
  
 let productionUnits = [
-    { name: "Pointer",      baseCost: 15,   cost: 15,   cps: 0.1, owned: 0 },
-    { name: "Grandma",      baseCost: 100,  cost: 100,  cps: 1,   owned: 0 },
+    { name: "Pointer",      baseCost: 15,   cost: 15,   cps: 1,   owned: 0 },
+    { name: "Grandma",      baseCost: 100,  cost: 100,  cps: 2.5,   owned: 0 },
     { name: "Farm",         baseCost: 500,  cost: 500,  cps: 4,   owned: 0 },
     { name: "Mine",         baseCost: 1500, cost: 1500, cps: 8,   owned: 0 },
     { name: "Factory",      baseCost: 4000, cost: 4000, cps: 15,  owned: 0 },
