@@ -2,14 +2,14 @@
     box-sizing: border-box;
     font-family: 'Segoe UI', Arial, sans-serif;
 }
-
+ 
 body {
     margin: 0;
     min-height: 100vh;
     background: #f3efe7;
     color: #2d2d2d;
 }
-
+ 
 header {
     background: #d98c2f;
     color: white;
@@ -17,12 +17,12 @@ header {
     padding: 18px;
     border-bottom: 4px solid #b96d1d;
 }
-
+ 
 header h1 {
     margin: 0;
     font-size: 2.2rem;
 }
-
+ 
 main {
     display: flex;
     flex-wrap: wrap;
@@ -32,7 +32,7 @@ main {
     max-width: 1200px;
     margin: 0 auto;
 }
-
+ 
 #cookie-area,
 #shop-area,
 #overview-area {
@@ -41,32 +41,32 @@ main {
     border-radius: 12px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
 }
-
+ 
 #cookie-area {
     flex: 1.2;
     min-width: 260px;
     text-align: center;
     padding: 24px 18px;
 }
-
+ 
 #cookie-count {
     margin: 0;
     font-size: 2.2rem;
     font-weight: 700;
     color: #2d2d2d;
 }
-
+ 
 #cps-count {
     margin: 10px 0 18px;
     color: #5d5d5d;
     font-weight: 600;
 }
-
+ 
 #cookie-float-wrapper {
     display: inline-block;
     animation: floatIdle 2.5s ease-in-out infinite;
 }
-
+ 
 #cookie-btn {
     width: 180px;
     height: 180px;
@@ -81,15 +81,15 @@ main {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
     display: block;
 }
-
+ 
 #cookie-btn:hover {
     transform: scale(1.05);
 }
-
+ 
 #cookie-btn:active {
     transform: scale(0.95);
 }
-
+ 
 #cookie-btn img {
     display: block;
     width: 100%;
@@ -97,21 +97,22 @@ main {
     object-fit: cover;
     border-radius: 50%;
 }
-
+ 
 @keyframes floatIdle {
     0%   { transform: translateY(0px); }
     50%  { transform: translateY(-10px); }
     100% { transform: translateY(0px); }
 }
-
+ 
 .float-effect {
-    position: absolute;
-    font-weight: 700;
-    color: #d98c2f;
+    position: fixed;
+    font-weight: 800;
+    font-size: 1.2rem;
+    color: #cf2d2d;
     pointer-events: none;
-    animation: floatUp 0.8s ease-out forwards;
+    animation: floatUp 1.3s ease-out forwards;
 }
-
+ 
 @keyframes floatUp {
     0% {
         opacity: 1;
@@ -122,13 +123,13 @@ main {
         transform: translateY(-40px);
     }
 }
-
+ 
 #shop-area {
     flex: 1;
     min-width: 280px;
     padding: 16px;
 }
-
+ 
 .tabs {
     display: flex;
     gap: 8px;
@@ -137,7 +138,7 @@ main {
     padding: 6px;
     border-radius: 8px;
 }
-
+ 
 .tab-btn {
     flex: 1;
     padding: 10px;
@@ -148,12 +149,12 @@ main {
     cursor: pointer;
     border-radius: 6px;
 }
-
+ 
 .tab-btn.active {
     background: #d98c2f;
     color: white;
 }
-
+ 
 #production-panel h2,
 #upgrades-panel h2,
 #overview-area h2 {
@@ -161,7 +162,7 @@ main {
     color: #373737;
     font-size: 1.2rem;
 }
-
+ 
 .shop-item {
     display: flex;
     justify-content: space-between;
@@ -173,11 +174,11 @@ main {
     padding: 10px 12px;
     margin-bottom: 8px;
 }
-
+ 
 .shop-item.bought {
     opacity: 0.6;
 }
-
+ 
 .shop-item button {
     padding: 8px 12px;
     border: none;
@@ -187,25 +188,25 @@ main {
     font-weight: 700;
     cursor: pointer;
 }
-
+ 
 .shop-item button:disabled {
     background: #dcdcdc;
     color: #777;
     cursor: not-allowed;
 }
-
+ 
 #overview-area {
     flex: 0.8;
     min-width: 220px;
     padding: 16px;
 }
-
+ 
 #overview-list {
     display: flex;
     flex-direction: column;
     gap: 8px;
 }
-
+ 
 #overview-list div {
     background: #fafafa;
     border: 1px solid #e0e0e0;
