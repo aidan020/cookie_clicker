@@ -2,33 +2,70 @@ let cookies = 0;
 let cookiesPerClick = 1;
  
 let productionUnits = [
-    { name: "Pointer",      baseCost: 15,   cost: 15,   cps: 1,   owned: 0 },
-    { name: "Grandma",      baseCost: 100,  cost: 100,  cps: 2.5,   owned: 0 },
-    { name: "Farm",         baseCost: 500,  cost: 500,  cps: 4,   owned: 0 },
-    { name: "Mine",         baseCost: 1500, cost: 1500, cps: 8,   owned: 0 },
-    { name: "Factory",      baseCost: 4000, cost: 4000, cps: 15,  owned: 0 },
-    { name: "Bank",         baseCost: 8000, cost: 8000, cps: 30,  owned: 0 },
-    { name: "Temple",       baseCost: 15000,cost: 15000,cps: 60,  owned: 0 },
-    { name: "Wizard Tower", baseCost: 25000,cost: 25000,cps: 100, owned: 0 }
+    { name: "Pointer",      baseCost: 15,    cost: 15,    cps: 1,   owned: 0 },
+    { name: "Grandma",      baseCost: 100,   cost: 100,   cps: 2.5, owned: 0 },
+    { name: "Farm",         baseCost: 500,   cost: 500,   cps: 4,   owned: 0 },
+    { name: "Mine",         baseCost: 1500,  cost: 1500,  cps: 8,   owned: 0 },
+    { name: "Factory",      baseCost: 4000,  cost: 4000,  cps: 15,  owned: 0 },
+    { name: "Bank",         baseCost: 8000,  cost: 8000,  cps: 30,  owned: 0 },
+    { name: "Temple",       baseCost: 15000, cost: 15000, cps: 60,  owned: 0 },
+    { name: "Wizard Tower", baseCost: 25000, cost: 25000, cps: 100, owned: 0 }
 ];
+ 
+ 
+class Upgrade {
+    constructor(name, cost) {
+        this.name = name;
+        this.cost = cost;
+        this.bought = false;
+    }
+ 
+    apply() {}
+}
+ 
+class UnitUpgrade extends Upgrade {
+    constructor(name, cost, unitName, factor) {
+        super(name, cost);
+        this.unitName = unitName;
+        this.factor = factor;
+    }
+ 
+    apply() {
+        let unit = productionUnits.find(u => u.name === this.unitName);
+        if (unit) unit.cps *= this.factor;
+    }
+}
+
+class ClickUpgrade extends Upgrade {
+    constructor(name, cost, factor) {
+        super(name, cost);
+        this.factor = factor;
+    }
+ 
+    apply() {
+        cookiesPerClick *= this.factor;
+    }
+}
+ 
+class GlobalUpgrade extends Upgrade {
+    constructor(name, cost, factor) {
+        super(name, cost);
+        this.factor = factor;
+    }
+ 
+    apply() {
+        productionUnits.forEach(u => u.cps *= this.factor);
+    }
+}
  
 let upgrades = [
-    { name: "Grandma's koekjesboek",   cost: 500,  bought: false, effect: () => multiplyUnit("Grandma", 2) },
-    { name: "Snellere pointers",       cost: 300,  bought: false, effect: () => multiplyUnit("Pointer", 2) },
-    { name: "Betere zaden",            cost: 2000, bought: false, effect: () => multiplyUnit("Farm", 3) },
-    { name: "Extra sterke klik",       cost: 1000, bought: false, effect: () => { cookiesPerClick *= 2; } },
-    { name: "Efficiëntie overal",      cost: 5000, bought: false, effect: () => multiplyAllUnits(1.1) }
+    new UnitUpgrade("Grandma's koekjesboek", 500,  "Grandma", 2),
+    new UnitUpgrade("Snellere pointers",     300,  "Pointer", 2),
+    new UnitUpgrade("Betere zaden",          2000, "Farm",    3),
+    new ClickUpgrade("Extra sterke klik",    1000, 2),
+    new GlobalUpgrade("Efficiëntie overal",  5000, 1.1)
 ];
 
-function multiplyUnit(name, factor) {
-    let unit = productionUnits.find(u => u.name === name);
-    if (unit) unit.cps *= factor;
-}
- 
-function multiplyAllUnits(factor) {
-    productionUnits.forEach(u => u.cps *= factor);
-}
- 
 const cookieBtn = document.getElementById("cookie-btn");
  
 cookieBtn.addEventListener("click", (event) => {
@@ -48,9 +85,9 @@ function showFloatingEffect(event, text) {
  
     setTimeout(() => effect.remove(), 800);
 }
- 
+
 function updateCookieDisplay() {
-    if (cookies < 0) cookies = 0; 
+    if (cookies < 0) cookies = 0;
     document.getElementById("cookie-count").textContent = Math.floor(cookies) + " cookies";
 }
  
@@ -62,12 +99,12 @@ function updateCpsDisplay() {
 function getTotalCps() {
     return productionUnits.reduce((total, unit) => total + (unit.cps * unit.owned), 0);
 }
- 
+
 function buyProductionUnit(unit) {
     if (cookies >= unit.cost) {
         cookies -= unit.cost;
         unit.owned += 1;
-        unit.cost = Math.round(unit.baseCost * Math.pow(1.15, unit.owned)); 
+        unit.cost = Math.round(unit.baseCost * Math.pow(1.15, unit.owned));
  
         updateCookieDisplay();
         updateCpsDisplay();
@@ -80,7 +117,7 @@ function buyUpgrade(upgrade) {
     if (!upgrade.bought && cookies >= upgrade.cost) {
         cookies -= upgrade.cost;
         upgrade.bought = true;
-        upgrade.effect(); 
+        upgrade.apply();
  
         updateCookieDisplay();
         updateCpsDisplay();
@@ -89,7 +126,7 @@ function buyUpgrade(upgrade) {
         renderOverview();
     }
 }
- 
+
 function renderOverview() {
     let overview = document.getElementById("overview-list");
     overview.innerHTML = "";
@@ -178,7 +215,7 @@ setInterval(() => {
         cookies += cpsGain;
         updateCookieDisplay();
     }
-
+ 
     renderProductionList();
     renderUpgradesList();
 }, 1000);
