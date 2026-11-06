@@ -35,7 +35,7 @@ class UnitUpgrade extends Upgrade {
         if (unit) unit.cps *= this.factor;
     }
 }
-
+ 
 class ClickUpgrade extends Upgrade {
     constructor(name, cost, factor) {
         super(name, cost);
@@ -65,7 +65,7 @@ let upgrades = [
     new ClickUpgrade("Extra sterke klik",    1000, 2),
     new GlobalUpgrade("Efficiëntie overal",  5000, 1.1)
 ];
-
+ 
 const cookieBtn = document.getElementById("cookie-btn");
  
 cookieBtn.addEventListener("click", (event) => {
@@ -85,7 +85,7 @@ function showFloatingEffect(event, text) {
  
     setTimeout(() => effect.remove(), 800);
 }
-
+ 
 function updateCookieDisplay() {
     if (cookies < 0) cookies = 0;
     document.getElementById("cookie-count").textContent = Math.floor(cookies) + " cookies";
@@ -99,7 +99,7 @@ function updateCpsDisplay() {
 function getTotalCps() {
     return productionUnits.reduce((total, unit) => total + (unit.cps * unit.owned), 0);
 }
-
+ 
 function buyProductionUnit(unit) {
     if (cookies >= unit.cost) {
         cookies -= unit.cost;
@@ -110,6 +110,7 @@ function buyProductionUnit(unit) {
         updateCpsDisplay();
         renderProductionList();
         renderOverview();
+        saveGame();
     }
 }
  
@@ -124,9 +125,10 @@ function buyUpgrade(upgrade) {
         renderUpgradesList();
         renderProductionList();
         renderOverview();
+        saveGame();
     }
 }
-
+ 
 function renderOverview() {
     let overview = document.getElementById("overview-list");
     overview.innerHTML = "";
@@ -220,6 +222,67 @@ setInterval(() => {
     renderUpgradesList();
 }, 1000);
  
+ 
+// ================= SAVE / LOAD =================
+const SAVE_KEY = "cookieClickerSave";
+ 
+function saveGame() {
+    try {
+        const data = {
+            version: 1,
+            cookies: cookies,
+            units: productionUnits.map(u => ({ name: u.name, owned: u.owned })),
+            boughtUpgrades: upgrades.filter(u => u.bought).map(u => u.name)
+        };
+        localStorage.setItem(SAVE_KEY, JSON.stringify(data));
+    } catch (e) {
+        console.error("Opslaan mislukt:", e);
+    }
+}
+ 
+function loadGame() {
+    const raw = localStorage.getItem(SAVE_KEY);
+    if (!raw) return;
+ 
+    try {
+        const data = JSON.parse(raw);
+ 
+        cookies = Number(data.cookies) || 0;
+ 
+        // Units terugzetten en kosten opnieuw berekenen
+        (data.units || []).forEach(saved => {
+            const unit = productionUnits.find(u => u.name === saved.name);
+            if (unit) {
+                unit.owned = Number(saved.owned) || 0;
+                unit.cost = Math.round(unit.baseCost * Math.pow(1.15, unit.owned));
+            }
+        });
+ 
+        // Upgrades opnieuw toepassen (cps en cookiesPerClick starten op de beginwaarde)
+        const bought = data.boughtUpgrades || [];
+        upgrades.forEach(upgrade => {
+            if (bought.includes(upgrade.name)) {
+                upgrade.bought = true;
+                upgrade.apply();
+            }
+        });
+    } catch (e) {
+        console.error("Laden mislukt:", e);
+        localStorage.removeItem(SAVE_KEY);
+    }
+}
+ 
+function resetGame() {
+    if (confirm("Weet je zeker dat je opnieuw wilt beginnen?")) {
+        window.removeEventListener("beforeunload", saveGame);
+        localStorage.removeItem(SAVE_KEY);
+        location.reload();
+    }
+}
+ 
+document.getElementById("reset-btn").addEventListener("click", resetGame);
+ 
+ 
 function init() {
     updateCookieDisplay();
     updateCpsDisplay();
@@ -228,4 +291,8 @@ function init() {
     renderOverview();
 }
  
+loadGame();
 init();
+ 
+setInterval(saveGame, 10000);
+window.addEventListener("beforeunload", saveGame);
