@@ -1,298 +1,330 @@
-let cookies = 0;
-let cookiesPerClick = 1;
- 
-let productionUnits = [
-    { name: "Pointer",      baseCost: 15,    cost: 15,    cps: 1,   owned: 0 },
-    { name: "Grandma",      baseCost: 100,   cost: 100,   cps: 2.5, owned: 0 },
-    { name: "Farm",         baseCost: 500,   cost: 500,   cps: 4,   owned: 0 },
-    { name: "Mine",         baseCost: 1500,  cost: 1500,  cps: 8,   owned: 0 },
-    { name: "Factory",      baseCost: 4000,  cost: 4000,  cps: 15,  owned: 0 },
-    { name: "Bank",         baseCost: 8000,  cost: 8000,  cps: 30,  owned: 0 },
-    { name: "Temple",       baseCost: 15000, cost: 15000, cps: 60,  owned: 0 },
-    { name: "Wizard Tower", baseCost: 25000, cost: 25000, cps: 100, owned: 0 }
-];
- 
- 
-class Upgrade {
-    constructor(name, cost) {
+class ProductionUnit {
+    constructor(name, baseCost, cps) {
         this.name = name;
+        this.baseCost = baseCost;
+        this.cost = baseCost;
+        this.cps = cps;
+        this.owned = 0;
+    }
+
+    buy(game) {
+        if (game.cookies < this.cost) return false;
+        game.cookies -= this.cost;
+        this.owned++;
+        this.cost = Math.round(this.baseCost * 1.8 ** this.owned);
+        return true;
+    }
+
+    get totalCps() {
+        return this.cps * this.owned;
+    }
+}
+
+class Upgrade {
+    constructor(name, cost, description, effect) {
+        this.name = name;
+        this.baseCost = cost;
         this.cost = cost;
-        this.bought = false;
+        this.description = description;
+        this.effect = effect;
+        this.level = 0;
     }
- 
-    apply() {}
-}
- 
-class UnitUpgrade extends Upgrade {
-    constructor(name, cost, unitName, factor) {
-        super(name, cost);
-        this.unitName = unitName;
-        this.factor = factor;
-    }
- 
-    apply() {
-        let unit = productionUnits.find(u => u.name === this.unitName);
-        if (unit) unit.cps *= this.factor;
+
+    buy(game) {
+        if (game.cookies < this.cost) return false;
+        game.cookies -= this.cost;
+        this.level++;
+        this.cost = Math.round(this.baseCost * 1.5 ** this.level);
+        this.effect();
+        return true;
     }
 }
- 
-class ClickUpgrade extends Upgrade {
-    constructor(name, cost, factor) {
-        super(name, cost);
-        this.factor = factor;
-    }
- 
-    apply() {
-        cookiesPerClick *= this.factor;
-    }
-}
- 
-class GlobalUpgrade extends Upgrade {
-    constructor(name, cost, factor) {
-        super(name, cost);
-        this.factor = factor;
-    }
- 
-    apply() {
-        productionUnits.forEach(u => u.cps *= this.factor);
-    }
-}
- 
-let upgrades = [
-    new UnitUpgrade("Grandma's koekjesboek", 500,  "Grandma", 2),
-    new UnitUpgrade("Snellere pointers",     300,  "Pointer", 2),
-    new UnitUpgrade("Betere zaden",          2000, "Farm",    3),
-    new ClickUpgrade("Extra sterke klik",    1000, 2),
-    new GlobalUpgrade("Efficiëntie overal",  5000, 1.1)
-];
- 
-const cookieBtn = document.getElementById("cookie-btn");
- 
-cookieBtn.addEventListener("click", (event) => {
-    cookies += cookiesPerClick;
-    updateCookieDisplay();
-    showFloatingEffect(event, "+" + cookiesPerClick);
-});
- 
-function showFloatingEffect(event, text) {
-    let effect = document.createElement("div");
-    effect.classList.add("float-effect");
-    effect.textContent = text;
- 
-    effect.style.left = event.clientX + "px";
-    effect.style.top = event.clientY + "px";
-    document.body.appendChild(effect);
- 
-    setTimeout(() => effect.remove(), 800);
-}
- 
-function updateCookieDisplay() {
-    if (cookies < 0) cookies = 0;
-    document.getElementById("cookie-count").textContent = Math.floor(cookies) + " cookies";
-}
- 
-function updateCpsDisplay() {
-    let totalCps = getTotalCps();
-    document.getElementById("cps-count").textContent = totalCps.toFixed(1) + " cookies per second";
-}
- 
-function getTotalCps() {
-    return productionUnits.reduce((total, unit) => total + (unit.cps * unit.owned), 0);
-}
- 
-function buyProductionUnit(unit) {
-    if (cookies >= unit.cost) {
-        cookies -= unit.cost;
-        unit.owned += 1;
-        unit.cost = Math.round(unit.baseCost * Math.pow(1.15, unit.owned));
- 
-        updateCookieDisplay();
-        updateCpsDisplay();
-        renderProductionList();
-        renderOverview();
-        saveGame();
-    }
-}
- 
-function buyUpgrade(upgrade) {
-    if (!upgrade.bought && cookies >= upgrade.cost) {
-        cookies -= upgrade.cost;
-        upgrade.bought = true;
-        upgrade.apply();
- 
-        updateCookieDisplay();
-        updateCpsDisplay();
-        renderUpgradesList();
-        renderProductionList();
-        renderOverview();
-        saveGame();
-    }
-}
- 
-function renderOverview() {
-    let overview = document.getElementById("overview-list");
-    overview.innerHTML = "";
- 
-    let boughtUnits = productionUnits.filter(u => u.owned > 0);
-    let boughtUpgrades = upgrades.filter(u => u.bought);
- 
-    if (boughtUnits.length === 0 && boughtUpgrades.length === 0) {
-        overview.innerHTML = "Nog niets gekocht";
-        return;
-    }
- 
-    boughtUnits.forEach(unit => {
-        let div = document.createElement("div");
-        div.textContent = unit.name + ": " + unit.owned;
-        overview.appendChild(div);
-    });
- 
-    boughtUpgrades.forEach(upgrade => {
-        let div = document.createElement("div");
-        div.textContent = "Upgrade: " + upgrade.name;
-        overview.appendChild(div);
-    });
-}
- 
-function renderProductionList() {
-    let list = document.getElementById("production-list");
-    list.innerHTML = "";
- 
-    productionUnits.forEach(unit => {
-        let item = document.createElement("div");
-        item.classList.add("shop-item");
- 
-        item.innerHTML = `
-            <div>
-                <strong>${unit.name}</strong> (${unit.owned}x)<br>
-                ${unit.cps.toFixed(1)} cps per stuk
-            </div>
-            <button ${cookies < unit.cost ? "disabled" : ""}>
-                Koop (${unit.cost})
-            </button>
-        `;
- 
-        item.querySelector("button").addEventListener("click", () => buyProductionUnit(unit));
-        list.appendChild(item);
-    });
-}
- 
-function renderUpgradesList() {
-    let list = document.getElementById("upgrades-list");
-    list.innerHTML = "";
- 
-    upgrades.forEach(upgrade => {
-        let item = document.createElement("div");
-        item.classList.add("shop-item");
-        if (upgrade.bought) item.classList.add("bought");
- 
-        item.innerHTML = `
-            <div>
-                <strong>${upgrade.name}</strong>
-            </div>
-            <button ${upgrade.bought || cookies < upgrade.cost ? "disabled" : ""}>
-                ${upgrade.bought ? "Gekocht" : "Koop (" + upgrade.cost + ")"}
-            </button>
-        `;
- 
-        item.querySelector("button").addEventListener("click", () => buyUpgrade(upgrade));
-        list.appendChild(item);
-    });
-}
- 
-document.querySelectorAll(".tab-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-        document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
- 
-        let tab = btn.dataset.tab;
-        document.getElementById("production-panel").style.display = tab === "production" ? "block" : "none";
-        document.getElementById("upgrades-panel").style.display = tab === "upgrades" ? "block" : "none";
-    });
-});
- 
-setInterval(() => {
-    let cpsGain = getTotalCps();
-    if (cpsGain > 0) {
-        cookies += cpsGain;
-        updateCookieDisplay();
-    }
- 
-    renderProductionList();
-    renderUpgradesList();
-}, 1000);
- 
- 
-// ================= SAVE / LOAD =================
-const SAVE_KEY = "cookieClickerSave";
- 
-function saveGame() {
-    try {
-        const data = {
-            version: 1,
-            cookies: cookies,
-            units: productionUnits.map(u => ({ name: u.name, owned: u.owned })),
-            boughtUpgrades: upgrades.filter(u => u.bought).map(u => u.name)
-        };
-        localStorage.setItem(SAVE_KEY, JSON.stringify(data));
-    } catch (e) {
-        console.error("Opslaan mislukt:", e);
-    }
-}
- 
-function loadGame() {
-    const raw = localStorage.getItem(SAVE_KEY);
-    if (!raw) return;
- 
-    try {
-        const data = JSON.parse(raw);
- 
-        cookies = Number(data.cookies) || 0;
- 
-        // Units terugzetten en kosten opnieuw berekenen
-        (data.units || []).forEach(saved => {
-            const unit = productionUnits.find(u => u.name === saved.name);
-            if (unit) {
-                unit.owned = Number(saved.owned) || 0;
-                unit.cost = Math.round(unit.baseCost * Math.pow(1.15, unit.owned));
-            }
+
+class CookieGame {
+    constructor() {
+        this.saveKey = "cookieClickerSave";
+        this.isResetting = false;
+        this.cookies = 0;
+        this.cookiesPerClick = 1;
+        this.units = [
+            new ProductionUnit("Pointer", 15, 1),
+            new ProductionUnit("Grandma", 100, 2.5),
+            new ProductionUnit("Farm", 500, 4),
+            new ProductionUnit("Mine", 1500, 8),
+            new ProductionUnit("Factory", 4000, 15),
+            new ProductionUnit("Bank", 8000, 30),
+            new ProductionUnit("Temple", 15000, 60),
+            new ProductionUnit("Wizard Tower", 25000, 100)
+        ];
+
+        this.upgrades = [
+            new Upgrade("Grandma's koekjesboek", 500, "Grandmas x2", () => this.multiplyUnit("Grandma", 2)),
+            new Upgrade("Snellere pointers", 300, "Pointers x2", () => this.multiplyUnit("Pointer", 2)),
+            new Upgrade("Betere zaden", 2000, "Farms x3", () => this.multiplyUnit("Farm", 3)),
+            new Upgrade("Extra sterke klik", 1000, "Klikken geeft x2", () => { this.cookiesPerClick *= 2; }),
+            new Upgrade("Efficiëntie overal", 5000, "Alle productie +10%", () => this.multiplyAllUnits(1.1))
+        ];
+
+        this.cookieCount = document.getElementById("cookie-count");
+        this.cpsCount = document.getElementById("cps-count");
+        this.cookieTotal = document.getElementById("cookie-total");
+        this.cpsTotal = document.getElementById("cps-total");
+        this.clickTotal = document.getElementById("click-total");
+
+        this.loadGame();
+        this.bindEvents();
+        this.update();
+        setInterval(() => this.tick(), 1000);
+        setInterval(() => this.saveGame(), 10000);
+        window.addEventListener("beforeunload", () => {
+            if (!this.isResetting) this.saveGame();
         });
- 
-        // Upgrades opnieuw toepassen (cps en cookiesPerClick starten op de beginwaarde)
-        const bought = data.boughtUpgrades || [];
-        upgrades.forEach(upgrade => {
-            if (bought.includes(upgrade.name)) {
-                upgrade.bought = true;
-                upgrade.apply();
-            }
+    }
+
+    bindEvents() {
+        document.getElementById("cookie-btn").addEventListener("click", (event) => {
+            this.cookies += this.cookiesPerClick;
+            this.updateDisplays();
+            this.showFloatingEffect(event);
         });
-    } catch (e) {
-        console.error("Laden mislukt:", e);
-        localStorage.removeItem(SAVE_KEY);
+
+        document.querySelectorAll(".tab-btn").forEach((button) => {
+            button.addEventListener("click", () => this.showTab(button));
+        });
+
+        const saveButton = document.getElementById("save-btn");
+        saveButton.addEventListener("click", () => {
+            const saved = this.saveGame();
+            saveButton.textContent = saved ? "Opgeslagen" : "Opslaan mislukt";
+            window.setTimeout(() => {
+                saveButton.textContent = "Opslaan";
+            }, 1600);
+        });
+
+        const resetButton = document.getElementById("reset-btn");
+        if (resetButton) resetButton.addEventListener("click", () => this.resetGame());
+    }
+
+    showTab(selectedButton) {
+        document.querySelectorAll(".tab-btn").forEach((button) => {
+            button.classList.toggle("active", button === selectedButton);
+            button.setAttribute("aria-selected", button === selectedButton ? "true" : "false");
+        });
+        const showUpgrades = selectedButton.dataset.tab === "upgrades";
+        document.getElementById("upgrades-panel").hidden = !showUpgrades;
+        document.getElementById("overview-panel").hidden = showUpgrades;
+    }
+
+    showFloatingEffect(event) {
+        const effect = document.createElement("div");
+        effect.classList.add("float-effect");
+        effect.textContent = "+" + this.formatNumber(this.cookiesPerClick);
+        effect.style.left = event.clientX + "px";
+        effect.style.top = event.clientY + "px";
+        document.body.appendChild(effect);
+        setTimeout(() => effect.remove(), 800);
+    }
+
+    multiplyUnit(name, factor) {
+        const unit = this.units.find((unit) => unit.name === name);
+        if (unit) unit.cps *= factor;
+    }
+
+    multiplyAllUnits(factor) {
+        this.units.forEach((unit) => unit.cps *= factor);
+    }
+
+    get totalCps() {
+        return this.units.reduce((total, unit) => total + unit.totalCps, 0);
+    }
+
+    formatNumber(value, decimalPlaces = 0) {
+        const suffixes = ["K", "M", "B", "T", "Qa", "Qi", "Sx", "Sp", "Oc", "No", "Dc"];
+        const absoluteValue = Math.abs(value);
+        if (absoluteValue < 100000) return value.toFixed(decimalPlaces);
+        let suffixIndex = Math.floor(Math.log10(absoluteValue) / 3) - 1;
+        if (suffixIndex >= suffixes.length) return value.toExponential(1);
+        let scaledValue = value / 10 ** (3 + suffixIndex * 3);
+        if (Number(scaledValue.toFixed(1)) >= 1000) {
+            suffixIndex++;
+            if (suffixIndex >= suffixes.length) return value.toExponential(1);
+            scaledValue = value / 10 ** (3 + suffixIndex * 3);
+        }
+        return scaledValue.toFixed(1).replace(/\.0$/, "") + suffixes[suffixIndex];
+    }
+
+    updateDisplays() {
+        const cookies = this.formatNumber(Math.floor(this.cookies));
+        const cps = this.formatNumber(this.totalCps, 1);
+        const perClick = this.formatNumber(this.cookiesPerClick);
+        this.cookieCount.textContent = cookies + " cookies";
+        this.cpsCount.textContent = cps + " per seconde · " + perClick + " per klik";
+        this.cookieTotal.textContent = cookies;
+        this.cpsTotal.textContent = cps;
+        this.clickTotal.textContent = perClick;
+    }
+
+    renderShop(items, listId, description, buyItem) {
+        const list = document.getElementById(listId);
+        list.innerHTML = "";
+        const isProduction = listId === "production-list";
+
+        items.forEach((item) => {
+            const row = document.createElement("button");
+            row.classList.add("shop-item");
+            row.type = "button";
+            row.disabled = this.cookies < item.cost;
+            row.classList.toggle("is-affordable", !row.disabled);
+            const priceLabel = `${this.formatNumber(item.cost)} koekjes`;
+            row.setAttribute(
+                "aria-label",
+                row.disabled
+                    ? `${item.name} kost ${priceLabel}; nog koekjes nodig`
+                    : `Koop ${item.name} voor ${priceLabel}`
+            );
+
+            const icon = document.createElement("span");
+            icon.classList.add("item-icon");
+            icon.setAttribute("aria-hidden", "true");
+            icon.textContent = item.name.charAt(0);
+
+            const copy = document.createElement("span");
+            copy.classList.add("item-copy");
+            const name = document.createElement("strong");
+            name.textContent = item.name;
+            const detail = document.createElement("span");
+            detail.textContent = description(item);
+            copy.append(name, detail);
+
+            const cost = document.createElement("span");
+            cost.classList.add("item-cost");
+            cost.textContent = priceLabel;
+            const status = document.createElement("span");
+            status.textContent = isProduction
+                ? `bezit: ${this.formatNumber(item.owned)}`
+                : row.disabled
+                    ? "koekjes nodig"
+                    : "NU KOPEN";
+            cost.appendChild(status);
+            row.append(icon, copy, cost);
+            row.addEventListener("click", () => {
+                if (buyItem(item)) {
+                    this.update();
+                    this.saveGame();
+                }
+            });
+            list.appendChild(row);
+        });
+    }
+
+    renderShops() {
+        this.renderShop(this.units, "production-list", (unit) => `${this.formatNumber(unit.cps, 1)} /s`, (unit) => unit.buy(this));
+        this.renderShop(this.upgrades, "upgrades-list", (upgrade) => upgrade.description, (upgrade) => upgrade.buy(this));
+    }
+
+    renderOverview() {
+        const overview = document.getElementById("overview-list");
+        overview.innerHTML = "";
+        this.units.forEach((unit) => {
+            const item = document.createElement("div");
+            item.classList.add("overview-item");
+            const name = document.createElement("span");
+            name.textContent = unit.name;
+            const bar = document.createElement("span");
+            bar.classList.add("overview-bar");
+            const fill = document.createElement("span");
+            fill.style.width = `${Math.min(unit.owned * 10, 100)}%`;
+            bar.appendChild(fill);
+            const count = document.createElement("span");
+            count.classList.add("overview-count");
+            count.textContent = this.formatNumber(unit.owned);
+            item.append(name, bar, count);
+            overview.appendChild(item);
+        });
+
+        const boughtUpgrades = this.upgrades.filter((upgrade) => upgrade.level > 0);
+        const upgradesOverview = document.getElementById("bought-upgrades-list");
+        upgradesOverview.innerHTML = "";
+        if (boughtUpgrades.length === 0) {
+            upgradesOverview.textContent = "Nog geen upgrades gekocht";
+            return;
+        }
+        boughtUpgrades.forEach((upgrade) => {
+            const item = document.createElement("div");
+            item.textContent = `${upgrade.name} — level ${this.formatNumber(upgrade.level)}`;
+            upgradesOverview.appendChild(item);
+        });
+    }
+
+    update() {
+        this.updateDisplays();
+        this.renderShops();
+        this.renderOverview();
+    }
+
+    tick() {
+        this.cookies += this.totalCps;
+        this.updateDisplays();
+        this.renderShops();
+    }
+
+    saveGame() {
+        try {
+            const data = {
+                cookies: this.cookies,
+                units: this.units.map((unit) => ({ name: unit.name, owned: unit.owned })),
+                upgrades: this.upgrades.map((upgrade) => ({ name: upgrade.name, level: upgrade.level }))
+            };
+            localStorage.setItem(this.saveKey, JSON.stringify(data));
+            return true;
+        } catch (error) {
+            console.error("Opslaan mislukt:", error);
+            return false;
+        }
+    }
+
+    loadGame() {
+        try {
+            const raw = localStorage.getItem(this.saveKey);
+            if (!raw) return;
+            const data = JSON.parse(raw);
+            this.cookies = Number(data.cookies) || 0;
+
+            (data.units || []).forEach((saved) => {
+                const unit = this.units.find((item) => item.name === saved.name);
+                if (unit) {
+                    unit.owned = Number(saved.owned) || 0;
+                    unit.cost = Math.round(unit.baseCost * 1.8 ** unit.owned);
+                }
+            });
+
+            (data.upgrades || []).forEach((saved) => {
+                const upgrade = this.upgrades.find((item) => item.name === saved.name);
+                if (!upgrade) return;
+                upgrade.level = Number(saved.level) || 0;
+                upgrade.cost = Math.round(upgrade.baseCost * 1.5 ** upgrade.level);
+                for (let i = 0; i < upgrade.level; i++) upgrade.effect();
+            });
+        } catch (error) {
+            console.error("Laden mislukt:", error);
+            localStorage.removeItem(this.saveKey);
+        }
+    }
+
+    resetGame() {
+        if (confirm("Weet je zeker dat je opnieuw wilt beginnen?")) {
+            this.isResetting = true;
+            try {
+                localStorage.removeItem(this.saveKey);
+            } catch (error) {
+                this.isResetting = false;
+                console.error("Resetten mislukt:", error);
+                alert("Je voortgang kon niet worden gewist. Probeer het opnieuw.");
+                return;
+            }
+            location.reload();
+        }
     }
 }
- 
-function resetGame() {
-    if (confirm("Weet je zeker dat je opnieuw wilt beginnen?")) {
-        window.removeEventListener("beforeunload", saveGame);
-        localStorage.removeItem(SAVE_KEY);
-        location.reload();
-    }
-}
- 
-document.getElementById("reset-btn").addEventListener("click", resetGame);
- 
- 
-function init() {
-    updateCookieDisplay();
-    updateCpsDisplay();
-    renderProductionList();
-    renderUpgradesList();
-    renderOverview();
-}
- 
-loadGame();
-init();
- 
-setInterval(saveGame, 10000);
-window.addEventListener("beforeunload", saveGame);
+
+new CookieGame();
