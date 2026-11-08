@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="nl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,49 +7,69 @@
     <link rel="stylesheet" href="main.css">
 </head>
 <body>
- 
-    <header>
+    <header class="topbar">
         <h1>Cookie Clicker</h1>
-    </header>
- 
-    <main>
-        <section id="cookie-area">
+        <div class="game-total" aria-live="polite">
             <p id="cookie-count">0 cookies</p>
-            <p id="cps-count">0 cookies per second</p>
- 
+            <p id="cps-count">0 per seconde · 1 per klik</p>
+        </div>
+        <div class="topbar-actions">
+            <button id="save-btn" class="header-button" type="button">Opslaan</button>
+            <button id="reset-btn" class="header-button reset-button" type="button">Reset</button>
+        </div>
+    </header>
+
+    <main class="game-layout">
+        <aside id="cookie-area" aria-label="Koekjes klikken">
+            <h2 class="section-label">Klik voor koekjes</h2>
             <div id="cookie-float-wrapper">
-                <button id="cookie-btn"><img src="f27b9b91acca9a52b0d60df59dfa212f.jpg" alt="Cookie"></button>
+                <button id="cookie-btn" aria-label="Klik om koekjes te verdienen">
+                    <img src="f27b9b91acca9a52b0d60df59dfa212f.jpg" alt="">
+                </button>
             </div>
- 
-            <button id="reset-btn">Opnieuw beginnen</button>
-        </section>
- 
-        <section id="shop-area">
- 
-            <div class="tabs">
-                <button class="tab-btn active" data-tab="production">Production</button>
-                <button class="tab-btn" data-tab="upgrades">Upgrades</button>
-            </div>
- 
-            <div id="production-panel" class="tab-panel">
-                <h2>Production units</h2>
-                <div id="production-list"></div>
-            </div>
- 
-            <div id="upgrades-panel" class="tab-panel" style="display:none;">
-                <h2>Upgrades</h2>
+            <p class="click-hint">Klik op de koek om te bakken.</p>
+
+            <section class="counter-panel" aria-label="Teller">
+                <h2 class="section-label">Jouw voorraad</h2>
+                <dl>
+                    <div><dt>Cookies</dt><dd id="cookie-total">0</dd></div>
+                    <div><dt>Per seconde</dt><dd id="cps-total">0</dd></div>
+                    <div><dt>Per klik</dt><dd id="click-total">1</dd></div>
+                </dl>
+            </section>
+        </aside>
+
+        <section id="workspace" aria-label="Upgrades en overzicht">
+            <nav class="tabs" aria-label="Speloverzicht">
+                <button class="tab-btn active" type="button" data-tab="upgrades" aria-selected="true">Upgrades</button>
+                <button class="tab-btn" type="button" data-tab="overview" aria-selected="false">Overzicht</button>
+            </nav>
+
+            <div id="upgrades-panel" class="tab-panel">
+                <h2 class="section-label">Maak je bakkerij steeds beter</h2>
+                <p class="upgrade-help">Bij een upgrade staat duidelijk hoeveel koekjes je nog nodig hebt. Klik op <strong>NU KOPEN</strong> als je genoeg hebt.</p>
                 <div id="upgrades-list"></div>
+                
             </div>
- 
+
+            <div id="overview-panel" class="tab-panel" hidden>
+                <h2 class="section-label">Gebouwen</h2>
+                <div id="overview-list"></div>
+                <h2 class="section-label upgrades-heading">Gekochte upgrades</h2>
+                <div id="bought-upgrades-list" class="empty-note">Nog geen upgrades gekocht</div>
+            </div>
         </section>
- 
-        <section id="overview-area">
-            <h2>Overzicht</h2>
-            <div id="overview-list">Nog niets gekocht</div>
-        </section>
+
+        <aside id="shop-area" aria-label="Winkel">
+            <h2 class="section-label shop-heading">Winkel <span>8 gebouwen</span></h2>
+            <div id="production-list"></div>
+            <section class="automation-panel">
+                <h2 class="section-label">Automatisch bakken</h2>
+                <p>Koekjes worden automatisch geproduceerd door je gebouwen.</p>
+            </section>
+        </aside>
     </main>
- 
+
     <script src="cookie_clicker.js"></script>
 </body>
 </html>
- 
