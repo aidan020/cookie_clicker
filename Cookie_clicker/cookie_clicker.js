@@ -230,15 +230,10 @@ class CookieGame {
             item.classList.add("overview-item");
             const name = document.createElement("span");
             name.textContent = unit.name;
-            const bar = document.createElement("span");
-            bar.classList.add("overview-bar");
-            const fill = document.createElement("span");
-            fill.style.width = `${Math.min(unit.owned * 10, 100)}%`;
-            bar.appendChild(fill);
             const count = document.createElement("span");
             count.classList.add("overview-count");
             count.textContent = this.formatNumber(unit.owned);
-            item.append(name, bar, count);
+            item.append(name, count);
             overview.appendChild(item);
         });
 
