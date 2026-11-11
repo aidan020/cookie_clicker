@@ -1,10 +1,3 @@
-// ============================================================
-// game-data.js
-// Hier staan alle getallen en namen van het spel.
-// Wil je een prijs, bonus of thema aanpassen? Doe dat hier.
-// ============================================================
-
-// De gebouwen in de winkel: ProductionUnit(naam, prijs, koekjes per seconde)
 function createUnits() {
     return [
         new ProductionUnit("Pointer", 15, 1),
@@ -18,7 +11,6 @@ function createUnits() {
     ];
 }
 
-// De upgrades: Upgrade(naam, prijs, beschrijving, wat er gebeurt)
 function createUpgrades(game) {
     return [
         new Upgrade("Grandma's koekjesboek", 500, "Grandmas x2", () => game.multiplyUnit("Grandma", 2)),
@@ -29,12 +21,6 @@ function createUpgrades(game) {
     ];
 }
 
-// De thema's:
-//   name      = naam in de lijst
-//   cssClass  = CSS-klasse die op <body> komt (leeg = standaard groen)
-//   image     = plaatje van de koek
-//   unlockAt  = aantal koekjes dat je nodig hebt om het thema te openen
-//   unlocked  = staat het thema open? (het eerste thema altijd)
 function createThemes() {
     return [
         { name: "Groen", cssClass: "", image: "Gingerbread_man.jpg", unlockAt: 0, unlocked: true },
