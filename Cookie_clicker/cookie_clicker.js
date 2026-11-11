@@ -40,7 +40,7 @@ class Upgrade {
     }
 }
  
-class CookieGame {
+ class CookieGame {
     constructor() {
         this.saveKey = "cookieClickerSave";
         this.isResetting = false;
