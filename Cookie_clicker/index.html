@@ -18,17 +18,17 @@
             <button id="reset-btn" class="header-button reset-button" type="button">Reset</button>
         </div>
     </header>
-
+ 
     <main class="game-layout">
         <aside id="cookie-area" aria-label="Koekjes klikken">
             <h2 class="section-label">Klik voor koekjes</h2>
             <div id="cookie-float-wrapper">
                 <button id="cookie-btn" aria-label="Klik om koekjes te verdienen">
-                    <img src="f27b9b91acca9a52b0d60df59dfa212f.jpg" alt="">
+                    <img id="cookie-img" src="f27b9b91acca9a52b0d60df59dfa212f.jpg" alt="">
                 </button>
             </div>
             <p class="click-hint">Klik op de koek om te bakken.</p>
-
+ 
             <section class="counter-panel" aria-label="Teller">
                 <h2 class="section-label">Jouw voorraad</h2>
                 <dl>
@@ -38,33 +38,39 @@
                 </dl>
             </section>
         </aside>
-
+ 
         <section id="workspace" aria-label="Upgrades en overzicht">
             <nav class="tabs" aria-label="Speloverzicht">
                 <button class="tab-btn active" type="button" data-tab="upgrades" aria-selected="true">Upgrades</button>
                 <button class="tab-btn" type="button" data-tab="overview" aria-selected="false">Overzicht</button>
+                <button class="tab-btn" type="button" data-tab="themes" aria-selected="false">Thema's</button>
             </nav>
-
+ 
             <div id="upgrades-panel" class="tab-panel">
                 <h2 class="section-label">Maak je bakkerij steeds beter</h2>
                 <div id="upgrades-list"></div>
                 
             </div>
-
+ 
             <div id="overview-panel" class="tab-panel" hidden>
                 <h2 class="section-label">Gebouwen</h2>
                 <div id="overview-list"></div>
                 <h2 class="section-label upgrades-heading">Gekochte upgrades</h2>
                 <div id="bought-upgrades-list" class="empty-note">Nog geen upgrades gekocht</div>
             </div>
+ 
+            <div id="themes-panel" class="tab-panel" hidden>
+                <h2 class="section-label">Kies je thema</h2>
+                <div id="themes-list"></div>
+            </div>
         </section>
-
+ 
         <aside id="shop-area" aria-label="Winkel">
             <h2 class="section-label shop-heading">Winkel <span>8 gebouwen</span></h2>
             <div id="production-list"></div>
         </aside>
     </main>
-
+ 
     <script src="cookie_clicker.js"></script>
 </body>
 </html>
