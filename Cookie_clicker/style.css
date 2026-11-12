@@ -45,8 +45,7 @@ button {
     position: relative;
     overflow: hidden;
     min-height: 86px;
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    display: flex;
     align-items: center;
     padding: 12px 30px;
     background: var(--holiday-green);
@@ -74,19 +73,28 @@ button {
 }
  
 .topbar h1 {
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 33.333%;
     margin: 0;
     color: #fffefa;
-    font-size: 1.16rem;
+    font-size: 18.56px;
     font-weight: 700;
-    letter-spacing: -0.025em;
+    letter-spacing: -0.464px;
 }
  
 .game-total {
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 33.333%;
     text-align: center;
     font-family: var(--font-body);
 }
  
 .topbar-actions {
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 33.333%;
     display: flex;
     justify-content: flex-end;
     align-items: center;
@@ -101,7 +109,7 @@ button {
     background: var(--paper);
     color: var(--cocoa);
     cursor: pointer;
-    font-size: 0.8rem;
+    font-size: 12.8px;
     font-weight: 600;
     transition: background 140ms ease, border-color 140ms ease;
 }
@@ -123,21 +131,21 @@ button {
 #cookie-count {
     margin: 0;
     color: #fffefa;
-    font-size: 1.55rem;
+    font-size: 24.8px;
     font-weight: 700;
 }
  
 #cps-count {
     margin: 5px 0 0;
     color: #d7e8d9;
-    font-size: 0.77rem;
+    font-size: 12.32px;
 }
  
  
 .game-layout {
     min-height: calc(100vh - 86px);
     display: grid;
-    grid-template-columns: 390px minmax(0, 1fr) 400px;
+    grid-template-columns: 390px minmax(0, calc(100% - 790px)) 400px;
     background: var(--paper);
 }
  
@@ -149,7 +157,7 @@ button {
  
 .section-label {
     color: var(--muted);
-    font-size: 0.78rem;
+    font-size: 12.48px;
     font-weight: 600;
     line-height: 1.5;
 }
@@ -157,7 +165,7 @@ button {
 #cookie-area > .section-label {
     margin: 0 0 24px;
     color: var(--cocoa);
-    font-size: 0.92rem;
+    font-size: 14.72px;
     text-align: center;
 }
  
@@ -213,7 +221,7 @@ button {
 .click-hint {
     margin: 0;
     color: var(--muted);
-    font-size: 0.8rem;
+    font-size: 12.8px;
     text-align: center;
 }
  
@@ -228,24 +236,19 @@ button {
     color: var(--cocoa);
 }
  
-.counter-panel dl {
+.counter-panel .counter-list {
     margin: 0;
 }
  
-.counter-panel dl div {
+.counter-panel .counter-row {
     display: flex;
     justify-content: space-between;
     gap: 12px;
     margin: 10px 0;
-    font-size: 0.85rem;
+    font-size: 13.6px;
 }
  
-.counter-panel dt,
-.counter-panel dd {
-    margin: 0;
-}
- 
-.counter-panel dd {
+.counter-panel .counter-value {
     font-variant-numeric: tabular-nums;
     font-weight: 700;
 }
@@ -273,7 +276,7 @@ button {
     background: transparent;
     color: var(--muted);
     cursor: pointer;
-    font-size: 0.83rem;
+    font-size: 13.28px;
     font-weight: 600;
 }
  
@@ -338,7 +341,7 @@ button {
     background: #f5f0df;
     color: #947128;
     font-family: var(--font-body);
-    font-size: 1.05rem;
+    font-size: 16.8px;
     font-weight: 700;
 }
  
@@ -347,41 +350,37 @@ button {
     flex: 1;
 }
  
-.item-copy strong,
-.item-copy span {
-    display: block;
+.item-name {
+    font-size: 14.4px;
+    font-weight: 700;
 }
  
-.item-copy strong {
-    font-size: 0.9rem;
-}
- 
-.item-copy span {
+.item-description {
     margin-top: 4px;
     color: var(--muted);
-    font-size: 0.76rem;
+    font-size: 12.16px;
 }
  
 .item-cost {
     flex: 0 0 auto;
     color: var(--cocoa);
     font-family: var(--font-body);
-    font-size: 0.78rem;
+    font-size: 12.48px;
     font-weight: 700;
     text-align: right;
 }
  
-.item-cost span {
-    display: block;
+.item-status {
     margin-top: 4px;
     color: var(--muted);
     font-family: var(--font-body);
-    font-size: 0.7rem;
+    font-size: 11.2px;
     font-weight: 400;
 }
  
 .shop-item:disabled .item-cost,
-.shop-item:disabled .item-copy span {
+.shop-item:disabled .item-description,
+.shop-item:disabled .item-status {
     color: #9da69f;
 }
  
@@ -394,7 +393,7 @@ button {
     border: 1px dashed #d8e2d9;
     border-radius: var(--radius-sm);
     color: #718177;
-    font-size: 0.8rem;
+    font-size: 12.8px;
     text-align: center;
 }
  
@@ -405,12 +404,8 @@ button {
 #upgrades-panel > .upgrade-help {
     margin: -5px 0 14px;
     color: var(--muted);
-    font-size: 0.78rem;
+    font-size: 12.48px;
     line-height: 1.5;
-}
- 
-.upgrade-help strong {
-    color: #a52c3b;
 }
  
 #upgrades-list .shop-item {
@@ -442,13 +437,13 @@ button {
 }
  
  
-#upgrades-list .item-cost > span {
+#upgrades-list .item-cost > .item-status {
     color: #286341;
-    font-size: 0.72rem;
+    font-size: 11.52px;
     font-weight: 700;
 }
  
-#upgrades-list .shop-item:not(.is-affordable) .item-cost > span {
+#upgrades-list .shop-item:not(.is-affordable) .item-status {
     color: #806b45;
     font-weight: 500;
 }
@@ -471,14 +466,18 @@ button {
  
 .overview-item {
     min-height: 39px;
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
+    display: flex;
     align-items: center;
     gap: 18px;
     padding: 7px 13px;
     border-bottom: 1px solid #e6ede6;
     color: #586d5e;
-    font-size: 0.83rem;
+    font-size: 13.28px;
+}
+
+.overview-item > div:first-child {
+    min-width: 0;
+    flex: 1;
 }
  
 .overview-item:last-child {
@@ -502,7 +501,7 @@ button {
     border: 1px solid var(--line);
     border-radius: var(--radius-sm);
     color: #586d5e;
-    font-size: 0.83rem;
+    font-size: 13.28px;
 }
  
 #shop-area {
@@ -520,12 +519,20 @@ button {
     border-bottom: 1px solid var(--line);
     background: var(--holiday-green);
     color: #fffefa;
-    font-size: 0.86rem;
+    font-size: 13.76px;
 }
  
-.shop-heading span {
+.shop-heading h2 {
+    margin: 0;
+    color: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+}
+
+.shop-heading .shop-count {
     color: #d7e8d9;
-    font-size: 0.72rem;
+    font-size: 11.52px;
     font-weight: 400;
 }
  
@@ -547,12 +554,12 @@ button {
     flex-basis: 39px;
 }
  
-#production-list .item-copy strong {
-    font-size: 0.85rem;
+#production-list .item-name {
+    font-size: 13.6px;
 }
  
 #production-list .item-cost {
-    font-size: 0.72rem;
+    font-size: 11.52px;
 }
  
 .automation-panel {
@@ -570,7 +577,7 @@ button {
     margin: 0;
     padding: 5px 16px 14px;
     color: var(--muted);
-    font-size: 0.76rem;
+    font-size: 12.16px;
     line-height: 1.55;
 }
  
@@ -613,7 +620,7 @@ button {
  
 @media (max-width: 1000px) {
     .game-layout {
-        grid-template-columns: 290px minmax(0, 1fr);
+        grid-template-columns: 290px minmax(0, calc(100% - 290px));
     }
  
     #cookie-area {
@@ -636,7 +643,7 @@ button {
  
     #production-list {
         display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: repeat(2, minmax(0, 50%));
     }
  
     #production-list .shop-item {
@@ -646,18 +653,24 @@ button {
  
 @media (max-width: 650px) {
     .topbar {
+        display: flex;
+        flex-wrap: wrap;
         min-height: 76px;
-        grid-template-columns: 1fr auto;
         gap: 8px;
         padding: 10px 15px;
     }
  
+    .topbar h1,
+    .topbar .game-total {
+        flex-basis: 45%;
+    }
+
     .topbar h1 {
-        font-size: 0.96rem;
+        font-size: 15.36px;
     }
  
     .topbar-actions {
-        grid-column: 1 / -1;
+        flex-basis: 100%;
         justify-content: space-between;
         gap: 6px;
     }
@@ -665,7 +678,7 @@ button {
     .header-button {
         min-height: 34px;
         padding: 0 8px;
-        font-size: 0.74rem;
+        font-size: 11.84px;
     }
  
     .game-total {
@@ -673,11 +686,11 @@ button {
     }
  
     #cookie-count {
-        font-size: 1.18rem;
+        font-size: 18.88px;
     }
  
     #cps-count {
-        font-size: 0.67rem;
+        font-size: 10.72px;
     }
  
     .game-layout {
@@ -692,7 +705,7 @@ button {
     #cookie-area {
         order: 2;
         display: grid;
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: repeat(2, minmax(0, calc(50% - 9px)));
         align-items: center;
         gap: 12px 18px;
         padding: 21px 16px;
@@ -715,7 +728,7 @@ button {
     }
  
     .click-hint {
-        font-size: 0.76rem;
+        font-size: 12.16px;
     }
  
     .counter-panel {
@@ -729,7 +742,7 @@ button {
     }
  
     #production-list {
-        grid-template-columns: 1fr;
+        grid-template-columns: 100%;
     }
  
     .tab-btn {
@@ -774,12 +787,13 @@ body.theme-red .header-button { border-color: #e6d3d5; }
 body.theme-red .header-button:hover { border-color: #c98f96; background: #fbeeee; }
  
 body.theme-red #cps-count,
-body.theme-red .shop-heading span { color: #f5d5d9; }
+body.theme-red .shop-heading .shop-count { color: #f5d5d9; }
  
 body.theme-red .shop-item:hover:not(:disabled) { border-color: #dcbfc3; background: #fcf5f5; }
 body.theme-red .shop-item:disabled { background: #f8f3f3; color: #a49a9b; }
 body.theme-red .shop-item:disabled .item-cost,
-body.theme-red .shop-item:disabled .item-copy span { color: #aaa0a1; }
+body.theme-red .shop-item:disabled .item-description,
+body.theme-red .shop-item:disabled .item-status { color: #aaa0a1; }
 body.theme-red .item-icon { border-color: #ecdadc; }
 body.theme-red .empty-note { border-color: #e8d6d8; color: #85707a; }
  
@@ -796,7 +810,7 @@ body.theme-red #upgrades-list .shop-item.is-affordable .item-icon {
 }
  
 body.theme-red #upgrades-list .shop-item.is-affordable .item-cost,
-body.theme-red #upgrades-list .item-cost > span {
+body.theme-red #upgrades-list .item-status {
     color: #8f1d2c;
 }
  
